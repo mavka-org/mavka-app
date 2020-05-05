@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mavka/screens/pages/list_of_units.dart';
 import 'package:mavka/services/database.dart';
@@ -6,6 +7,8 @@ import 'package:mavka/models/HexColor.dart';
 
 
 class ListOfCourses extends StatefulWidget {
+  final int form;
+  ListOfCourses({Key key, this.form}) : super(key: key);
   @override
   _ListOfCoursesState createState() => _ListOfCoursesState();
 }
@@ -19,7 +22,6 @@ class _ListOfCoursesState extends State<ListOfCourses> {
      return (c.red * 0.8 + c.green + c.blue * 0.2) / 510 * 100;
    }
 
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -30,7 +32,7 @@ class _ListOfCoursesState extends State<ListOfCourses> {
     var getHeight = (double percent) {
       return height * percent / 100.0;
     };
-    var courses = (new DatabaseService("")).getAllCourses();
+    var courses = (new DatabaseService("")).getAllCoursesByForm(this.widget.form);
     return Scaffold(
       body: FutureBuilder<List<DocumentSnapshot>>(
         future: courses,
@@ -89,9 +91,11 @@ class _ListOfCoursesState extends State<ListOfCourses> {
                     ),
                     Positioned(
                       child: RaisedButton(
+                        padding: EdgeInsets.only(left: getWidth(3.24), right: getWidth(3.24)),
                         color: colors[i % 6],
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListOfUnits(courseID: cc[i].documentID, courseInfo: cc[i].data)));
+                          //actionSheet(context, cc[i]);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListOfUnits(courseID: cc[i].documentID, courseInfo: cc[i].data, courseForm: this.widget.form)));
                         },
                         child: Align(
                           alignment: Alignment.bottomLeft,
@@ -100,7 +104,8 @@ class _ListOfCoursesState extends State<ListOfCourses> {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 color:  light(colors[i % 6]) < 60.0 ? Colors.white : Colors.black,
-                                fontFamily: "Gilroy"
+                                fontFamily: "Gilroy",
+                                fontSize: 14
                             ),
                           ),
                         ),
@@ -120,7 +125,7 @@ class _ListOfCoursesState extends State<ListOfCourses> {
               Padding(
                 padding: EdgeInsets.only(left: getWidth(8.7), top: getHeight(5.18)),
                 child: Text(
-                    "Курси 📚",
+                    "Курси " + this.widget.form.toString() + " класу",
                     style: TextStyle(
                       fontFamily: "GilroyBold",
                       fontWeight: FontWeight.bold,

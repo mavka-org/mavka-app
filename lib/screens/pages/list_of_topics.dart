@@ -7,7 +7,8 @@ import 'package:mavka/models/topic.dart';
 class ListOfTopics extends StatefulWidget {
   final String courseName;
   final String unitName;
-  ListOfTopics({Key key, this.courseName, this.unitName}) : super(key: key);
+  final int form;
+  ListOfTopics({Key key, this.courseName, this.unitName, this.form}) : super(key: key);
   @override
   _ListOfTopicsState createState() => _ListOfTopicsState();
 }
@@ -30,7 +31,7 @@ class _ListOfTopicsState extends State<ListOfTopics> {
       return height * percent / 100.0;
     };
    // print(this.widget.courseName + "     " +  this.widget.unitName);
-    var topics = (new DatabaseService("")).getAllTopicsWithName(this.widget.courseName, this.widget.unitName);
+    var topics = (new DatabaseService("")).getAllTopicsWithNameAndForm(this.widget.courseName, this.widget.unitName, this.widget.form);
     return Scaffold(
       body: FutureBuilder<List<Topic>>(
           future: topics,
